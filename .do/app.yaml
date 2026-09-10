@@ -1,0 +1,36 @@
+name: clearlot
+region: nyc
+services:
+  - name: web
+    dockerfile_path: Dockerfile
+    source_dir: /
+    github:
+      repo: sbchmn/Clearlot
+      branch: main
+      deploy_on_push: true
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /
+    envs:
+      - key: NITRO_PRESET
+        value: node-server
+        scope: BUILD_TIME
+      - key: HOST
+        value: 0.0.0.0
+        scope: RUN_TIME
+      - key: PORT
+        value: "8080"
+        scope: RUN_TIME
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        type: SECRET
+      - key: BETTER_AUTH_SECRET
+        scope: RUN_TIME
+        type: SECRET
+databases:
+  - name: clearlot-db
+    engine: PG
+    production: false
+    cluster_name: clearlot-pg
